@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import query from "jquery";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 const HeaderTwo = ({ category }) => {
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
   const [scroll, setScroll] = useState(false);
   useEffect(() => {
     window.onscroll = () => {
@@ -585,7 +587,11 @@ const HeaderTwo = ({ category }) => {
                 {/* Dropdown Select End */}
               </div>
               <form
-                action='#'
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const selectVal = query(e.target).find("select option:selected").text() || "All Categories";
+                  navigate(`/shop?q=${encodeURIComponent(searchQuery)}&category=${encodeURIComponent(selectVal)}`);
+                }}
                 className='flex-align flex-wrap form-location-wrapper'
               >
                 <div className='search-category style-two d-flex h-48 search-form d-sm-flex d-none'>
@@ -609,6 +615,8 @@ const HeaderTwo = ({ category }) => {
                   <div className='search-form__wrapper position-relative'>
                     <input
                       type='text'
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
                       className='search-form__input common-input py-13 ps-16 pe-18 rounded-0 border-0'
                       placeholder='Search for a product or brand'
                     />
